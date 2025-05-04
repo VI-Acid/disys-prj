@@ -9,13 +9,12 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     public static void main(String[] args) {
-        launch(args); // startet die JavaFX-App
+        launch(args); // startet JavaFX-App
     }
 
     @Override
     public void start(Stage stage) {
-        // einfacher GUI-Inhalt
-        Label label = new Label("Willkommen bei disys-prj!");
+        Label label = new Label("Willkommen bei Powergrid!");
         Scene scene = new Scene(label, 400, 200);
 
         stage.setTitle("JavaFX Test");
