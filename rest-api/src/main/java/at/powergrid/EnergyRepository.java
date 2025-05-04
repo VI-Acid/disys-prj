@@ -6,6 +6,7 @@ import java.util.*;
 
 @Repository
 public class EnergyRepository {
+    // Speicher-Klasse für EnergyData (kleine Datenbank)
     private final Map<UUID, EnergyData> dataMap = new HashMap<>();
 
     public static UUID nextId() {

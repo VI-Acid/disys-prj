@@ -6,8 +6,8 @@
 - Spring Boot (REST-API)
 
 ## Projektstruktur
-- `rest-api` → REST-Service mit `/current`, `/history`
-- `ui-app` → JavaFX-Anwendung mit Button zur Datenabfrage
+- `rest-api` → REST-Service mit `/current`, `/history` (Backend mit Spring Boot (liefert Energiedaten))
+- `ui-app` → JavaFX-Anwendung mit Button zur Datenabfrage Frontend mit JavaFX (zeigt ein einfaches Fenster an)
 
 
 

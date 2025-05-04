@@ -3,6 +3,7 @@ package at.powergrid;
 import java.util.UUID;
 
 public class EnergyData {
+    // Speichert Dateneinheit (zB: Stunde 13, produziert 65 kWh, verbraucht 40 kWh)
     private UUID id;
     private int hour;
     private int produced_kWh;

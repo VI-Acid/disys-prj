@@ -8,6 +8,7 @@ import java.util.*;
 
 @RestController
 public class EnergyController {
+    // REST-Schnittstelle mit HTTP-Endpunkten
 
     private final EnergyRepository repository;
 
@@ -21,6 +22,7 @@ public class EnergyController {
         return "REST API läuft!";
     }
 
+    // aktuelle Stunde
     @GetMapping("/current")
     public EnergyData getCurrent() {
         EnergyData current = new EnergyData(
@@ -33,22 +35,27 @@ public class EnergyController {
         return current;
     }
 
+
+    // alle bisherigen
     @GetMapping("/history")
     public List<EnergyData> getHistory() {
         return repository.findAll();
     }
 
+    // Datensätze löschen
     @DeleteMapping("/history/{id}")
     public void delete(@PathVariable UUID id) {
         repository.remove(id);
     }
 
+    // neuen Datensatz anlegen
     @PostMapping("/history")
     public EnergyData create(@RequestBody EnergyData data) {
         data.setId(EnergyRepository.nextId());
         return repository.save(data);
     }
 
+    // Datensatz aktualisieren
     @PutMapping("/history/{id}")
     public EnergyData update(@PathVariable UUID id, @RequestBody EnergyData data) {
         data.setId(id);
