@@ -1,4 +1,4 @@
-# disys-prj – Energie-Daten Viewer
+# disys-prj – Energie-Daten Viewer (Powergrid)
 
 ## Technologien
 - Java 21 (Zulu FX)
