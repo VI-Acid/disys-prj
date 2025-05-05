@@ -7,8 +7,8 @@
 - Maven
 
 
-## Projektstruktur
-- `rest-api` → REST-Service mit `/current`, `/history` (Backend mit Spring Boot (liefert Energiedaten))
+## Projektstruktur (eigene Module)
+- `rest-api` → (MVC-Prinzip (Model-View-Controller)) REST-Service mit `/current`, `/history` (Backend mit Spring Boot (liefert Energiedaten))
 - `ui-app` → JavaFX-Anwendung mit Button zur Datenabfrage Frontend mit JavaFX (zeigt ein einfaches Fenster an)
 
 ## Milestone
