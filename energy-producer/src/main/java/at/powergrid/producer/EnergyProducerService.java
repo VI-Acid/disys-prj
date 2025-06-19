@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 @Service
 public class EnergyProducerService {
@@ -21,16 +19,29 @@ public class EnergyProducerService {
 
     @Scheduled(fixedDelay = 3000) // alle 3 Sekunden
     public void sendProductionMessage() {
-        double kWh = 0.002 + (0.008 * random.nextDouble()); // z.B. zwischen 0.002 und 0.010
+        double weatherFactor = getWeatherFactor();
+        double baseProduction = 0.002 + (0.008 * random.nextDouble());
+        double adjustedProduction = Math.round((baseProduction * weatherFactor) * 10000.0) / 10000.0;
 
         String message = String.format(
                 "{\"type\":\"PRODUCER\",\"association\":\"COMMUNITY\",\"kwh\":%.4f,\"datetime\":\"%s\"}",
-                kWh,
-                LocalDateTime.now().toString()
+                adjustedProduction,
+                LocalDateTime.now()//.toString()
         );
 
         rabbitTemplate.convertAndSend("energyQueue", message);
         System.out.println("Producer sent: " + message);
     }
-}
 
+    private double getWeatherFactor() {
+        int hour = LocalDateTime.now().getHour();
+
+        if (hour >= 10 && hour <= 16) {
+            return 1.5; // sonnig: viel Produktion
+        } else if (hour >= 7 && hour <= 9 || hour >= 17 && hour <= 19) {
+            return 1.0; // morgens/abends: mittel
+        } else {
+            return 0.6; // nachts: wenig
+        }
+    }
+}

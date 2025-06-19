@@ -19,13 +19,33 @@ public class EnergyUserService {
 
     @Scheduled(fixedDelay = 3000)
     public void sendUsageMessage() {
-        double kWh = 0.001 + (0.005 * random.nextDouble()); // z.B. 0.001 bis 0.006 kWh
+        double usageFactor = getTimeBasedUsageFactor();
+        double baseUsage = 0.001 + (0.005 * random.nextDouble());
+        double adjustedUsage = Math.round((baseUsage * usageFactor) * 10000.0) / 10000.0;
+
         String message = String.format(
                 "{\"type\":\"USER\",\"association\":\"COMMUNITY\",\"kwh\":%.4f,\"datetime\":\"%s\"}",
-                kWh,
+                adjustedUsage,
                 LocalDateTime.now()
         );
         rabbitTemplate.convertAndSend("energyQueue", message);
         System.out.println("Sent user message: " + message);
     }
+
+    private double getTimeBasedUsageFactor() {
+        int hour = LocalDateTime.now().getHour();
+
+        if (hour >= 6 && hour <= 9) {
+            return 1.6; // morgens: hohe Nachfrage
+        } else if (hour >= 17 && hour <= 21) {
+            return 1.8; // abends: Spitzenzeit
+        } else if (hour >= 10 && hour <= 16) {
+            return 1.2; // tagsüber
+        } else {
+            return 0.7; // nachts: geringer Verbrauch
+        }
+    }
+
+
+
 }

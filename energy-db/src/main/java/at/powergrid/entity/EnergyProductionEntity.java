@@ -1,10 +1,10 @@
-package at.powergrid.repository;
+package at.powergrid.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity(name = "energy_usage")
-public class EnergyUsageEntity {
+@Entity(name = "energy_production")
+public class EnergyProductionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

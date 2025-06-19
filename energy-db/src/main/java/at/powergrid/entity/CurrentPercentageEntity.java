@@ -1,10 +1,10 @@
-package at.powergrid.repository;
+package at.powergrid.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity(name = "energy_production")
-public class EnergyProductionEntity {
+@Entity(name = "current_percentage")
+public class CurrentPercentageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +14,7 @@ public class EnergyProductionEntity {
     private LocalDateTime timestamp;
 
     @Column(nullable = false)
-    private double kwh;
+    private double percentage;
 
     public Long getId() {
         return id;
@@ -24,8 +24,8 @@ public class EnergyProductionEntity {
         return timestamp;
     }
 
-    public double getKwh() {
-        return kwh;
+    public double getPercentage() {
+        return percentage;
     }
 
     public void setId(Long id) {
@@ -36,7 +36,7 @@ public class EnergyProductionEntity {
         this.timestamp = timestamp;
     }
 
-    public void setKwh(double kwh) {
-        this.kwh = kwh;
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
     }
 }

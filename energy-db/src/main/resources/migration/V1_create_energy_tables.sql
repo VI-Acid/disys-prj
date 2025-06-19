@@ -1,7 +1,8 @@
 CREATE TABLE energy_usage (
-                              id SERIAL PRIMARY KEY,
-                              timestamp TIMESTAMP NOT NULL,
-                              kwh DOUBLE PRECISION NOT NULL
+                              hour TIMESTAMP PRIMARY KEY,
+                              community_produced DOUBLE PRECISION NOT NULL,
+                              community_used DOUBLE PRECISION NOT NULL,
+                              grid_used DOUBLE PRECISION NOT NULL
 );
 
 CREATE TABLE energy_production (
