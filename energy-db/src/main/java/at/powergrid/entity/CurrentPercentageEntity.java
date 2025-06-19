@@ -3,40 +3,51 @@ package at.powergrid.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity(name = "current_percentage")
+@Entity
+@Table(name = "current_percentage")
 public class CurrentPercentageEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(nullable = false)
+    private LocalDateTime hour;
 
     @Column(nullable = false)
-    private LocalDateTime timestamp;
+    private double communityDepleted;
 
     @Column(nullable = false)
-    private double percentage;
+    private double gridPortion;
 
-    public Long getId() {
-        return id;
+    public CurrentPercentageEntity() {
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
+    public CurrentPercentageEntity(LocalDateTime hour, double communityDepleted, double gridPortion) {
+        this.hour = hour;
+        this.communityDepleted = communityDepleted;
+        this.gridPortion = gridPortion;
     }
 
-    public double getPercentage() {
-        return percentage;
+    // Getter & Setter
+
+    public void setHour(LocalDateTime hour) {
+        this.hour = hour;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public LocalDateTime getHour() {
+        return hour;
+    }
+    public double getCommunityDepleted() {
+        return communityDepleted;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    public void setCommunityDepleted(double communityDepleted) {
+        this.communityDepleted = communityDepleted;
     }
 
-    public void setPercentage(double percentage) {
-        this.percentage = percentage;
+    public double getGridPortion() {
+        return gridPortion;
+    }
+
+    public void setGridPortion(double gridPortion) {
+        this.gridPortion = gridPortion;
     }
 }
