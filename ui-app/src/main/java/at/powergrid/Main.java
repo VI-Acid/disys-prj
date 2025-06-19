@@ -6,11 +6,8 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 
 
-
 public class Main extends Application {
     // GUI läuft unabhängig von der API
-
-
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/at/powergrid/hello-view.fxml"));

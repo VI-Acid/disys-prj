@@ -17,6 +17,9 @@
     <Button text="Lade aktuelle Daten"
             onAction="#onLoadCurrentDataClick"/>
 
+    <Button text="Lade History" onAction="#onLoadHistoryClick"/>
+
+
     <TextArea fx:id="textAreaOutput"
               prefHeight="200"
               wrapText="true"
