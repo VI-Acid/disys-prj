@@ -6,7 +6,7 @@ CREATE TABLE energy_usage (
 );
 
 CREATE TABLE current_percentage (
-                                   hour TIMESTAMP PRIMARY KEY,
-                                   community_depleted DOUBLE PRECISION,
-                                   grid_portion DOUBLE PRECISION
+                                    hour TIMESTAMP PRIMARY KEY,
+                                    community_depleted DOUBLE PRECISION,
+                                    grid_portion DOUBLE PRECISION
 );

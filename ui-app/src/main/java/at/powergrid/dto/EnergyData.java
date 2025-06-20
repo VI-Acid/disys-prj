@@ -1,34 +1,61 @@
 package at.powergrid.dto;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class EnergyData {
-    private LocalDateTime timestamp;
-    private double communityDepleted;
-    private double gridPortion;
+    private OffsetDateTime timestamp;
+    private double percentage;
+    private double produced_kWh;
+    private double used_kWh;
 
-    public LocalDateTime getTimestamp() {
+    public EnergyData() {
+        // notwendig für Jackson
+    }
+
+    public EnergyData(OffsetDateTime timestamp, int hour, double percentage) {
+        this.timestamp = timestamp;
+        this.percentage = percentage;
+    }
+
+    public EnergyData(OffsetDateTime timestamp, double percentage, double produced_kWh, double used_kWh) {
+        this.timestamp = timestamp;
+        this.percentage = percentage;
+        this.produced_kWh = produced_kWh;
+        this.used_kWh = used_kWh;
+    }
+
+    public OffsetDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(OffsetDateTime timestamp) {
         this.timestamp = timestamp;
     }
 
 
-    public double getCommunityDepleted() {
-        return communityDepleted;
+    public double getProduced_kWh() {
+        return produced_kWh;
     }
 
-    public void setCommunityDepleted(double communityDepleted) {
-        this.communityDepleted = communityDepleted;
+    public void setProduced_kWh(double produced_kWh) {
+        this.produced_kWh = produced_kWh;
     }
 
-    public double getGridPortion() {
-        return gridPortion;
+    public double getUsed_kWh() {
+        return used_kWh;
     }
 
-    public void setGridPortion(double gridPortion) {
-        this.gridPortion = gridPortion;
+    public void setUsed_kWh(double used_kWh) {
+        this.used_kWh = used_kWh;
     }
+
+    public double getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
+    }
+
 }

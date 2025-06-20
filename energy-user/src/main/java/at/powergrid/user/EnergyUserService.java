@@ -24,7 +24,7 @@ public class EnergyUserService {
         double adjustedUsage = Math.round((baseUsage * usageFactor) * 10000.0) / 10000.0;
 
         String message = String.format(
-                "{\"type\":\"USER\",\"association\":\"COMMUNITY\",\"kwh\":%.4f,\"datetime\":\"%s\"}",
+                "{\"type\":\"USER\",\"association\":\"COMMUNITY\",\"kwh\":\"%.4f\",\"datetime\":\"%s\"}",
                 adjustedUsage,
                 LocalDateTime.now()
         );

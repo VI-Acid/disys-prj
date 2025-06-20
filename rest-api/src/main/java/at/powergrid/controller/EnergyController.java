@@ -10,6 +10,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -33,19 +35,20 @@ public class EnergyController {
         CurrentPercentageEntity entity = percentageRepository.findById(currentHour).orElse(null);
 
         if (entity == null) {
-            return new EnergyData(currentHour, 0, 0); // Fallback
+            return new EnergyData(currentHour.atOffset(ZoneOffset.UTC), 0.0, 0.0, 0.0, entity.getCommunityDepleted(), entity.getGridPortion());
+            // Fallback
         }
 
-        return new EnergyData(currentHour, (int) entity.getCommunityDepleted(), entity.getGridPortion());
+        return new EnergyData(currentHour.atOffset(ZoneOffset.UTC), 0, 0, 0, entity.getCommunityDepleted(), entity.getGridPortion());
     }
 
     /** GET /energy/historical?start=...&end=... → Aggregierte Summen aus energy_usage */
     @GetMapping("/historical")
     public HistoricalResponse getHistoricalData(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime end) {
 
-        List<EnergyUsageEntity> entries = usageRepository.findByHourBetween(start, end);
+        List<EnergyUsageEntity> entries = usageRepository.findByHourBetween(start.toLocalDateTime(), end.toLocalDateTime());
 
         double totalProduced = entries.stream().mapToDouble(EnergyUsageEntity::getCommunityProduced).sum();
         double totalUsed     = entries.stream().mapToDouble(EnergyUsageEntity::getCommunityUsed).sum();

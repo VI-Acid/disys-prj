@@ -1,10 +1,13 @@
 package at.powergrid.producer;
 
+
+import jakarta.annotation.PostConstruct;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Random;
 
 @Service
@@ -24,9 +27,9 @@ public class EnergyProducerService {
         double adjustedProduction = Math.round((baseProduction * weatherFactor) * 10000.0) / 10000.0;
 
         String message = String.format(
-                "{\"type\":\"PRODUCER\",\"association\":\"COMMUNITY\",\"kwh\":%.4f,\"datetime\":\"%s\"}",
+                "{\"type\":\"PRODUCER\",\"association\":\"COMMUNITY\",\"kwh\":\"%.4f\",\"datetime\":\"%s\"}",
                 adjustedProduction,
-                LocalDateTime.now()//.toString()
+                LocalDateTime.now().toString()
         );
 
         rabbitTemplate.convertAndSend("energyQueue", message);
@@ -44,4 +47,6 @@ public class EnergyProducerService {
             return 0.6; // nachts: wenig
         }
     }
+
+
 }

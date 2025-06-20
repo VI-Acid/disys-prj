@@ -3,9 +3,11 @@ package at.powergrid;
 import at.powergrid.dto.EnergyData;
 import at.powergrid.dto.HistoricalResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -31,9 +33,14 @@ public class HelloController {
     public ComboBox<String> endHour;
 
     private final HttpClient client = HttpClient.newHttpClient();
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+    public HelloController() {
+        mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule()); // für OffsetDateTime
+    }
 
     @FXML
     public void initialize() {
@@ -55,11 +62,18 @@ public class HelloController {
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                // parse JSON
+            } else {
+                textAreaOutput.setText("Fehler vom Server: " + response.body());
+            }
+
             EnergyData data = mapper.readValue(response.body(), EnergyData.class);
 
             String formatted = String.format(
-                    "Aktuelle Stunde: %s\nCommunity Pool: %.2f %% verbraucht\nGrid Portion: %.2f %%",
-                    data.getTimestamp(), data.getCommunityDepleted(), data.getGridPortion()
+                    "Zeitpunkt: %s\nErzeugt: %.2f kWh\nVerbraucht: %.2f kWh\nVerbrauchsanteil: %.2f%%",
+                    data.getTimestamp(), data.getProduced_kWh(), data.getUsed_kWh(), data.getPercentage()
             );
 
             textAreaOutput.setText(formatted);
@@ -71,7 +85,6 @@ public class HelloController {
     @FXML
     public void onLoadHistoryClick(ActionEvent event) {
         try {
-            // Datum und Uhrzeit kombinieren
             String start = formatDateTime(startDate, startHour);
             String end = formatDateTime(endDate, endHour);
 
@@ -83,10 +96,16 @@ public class HelloController {
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                // parse JSON
+            } else {
+                textAreaOutput.setText("Fehler vom Server: " + response.body());
+            }
             HistoricalResponse data = mapper.readValue(response.body(), HistoricalResponse.class);
 
             String output = String.format(
-                    "Community produced: %.3f kWh\nCommunity used: %.3f kWh\nGrid used: %.3f kWh",
+                    "Community erzeugt: %.3f kWh\nCommunity verbraucht: %.3f kWh\nGrid genutzt: %.3f kWh",
                     data.getCommunityProduced(), data.getCommunityUsed(), data.getGridUsed()
             );
 
@@ -105,5 +124,4 @@ public class HelloController {
                 .atTime(Integer.parseInt(hourBox.getValue().substring(0, 2)), 0);
         return dateTime.format(formatter);
     }
-
 }
