@@ -25,13 +25,21 @@ public class CurrentPercentageService {
         this.usageRepository = usageRepository;
     }
 
-    @RabbitListener(queues = "updateQueue")
+    @RabbitListener(queues = "energyQueue")
     public void receiveUpdate(String message) {
         try {
+            System.out.println("📩 Nachricht empfangen: " + message);  // NEU
+
             JsonNode json = objectMapper.readTree(message);
 
-            LocalDateTime currentHour = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS);
-            Optional<EnergyUsageEntity> usageOpt = usageRepository.findById(currentHour);
+            LocalDateTime hour = LocalDateTime.parse(json.get("datetime").asText()).truncatedTo(ChronoUnit.HOURS);
+
+            System.out.println("🕒 Gesuchte Stunde in DB: " + hour);  // NEU
+
+
+
+
+            Optional<EnergyUsageEntity> usageOpt = usageRepository.findById(hour);
 
             if (usageOpt.isEmpty()) {
                 System.out.println("Keine Daten für aktuelle Stunde vorhanden.");
@@ -47,7 +55,7 @@ public class CurrentPercentageService {
             double gridPortion = (communityUsed > 0) ? (gridUsed / communityUsed * 100.0) : 0.0;
 
             CurrentPercentageEntity percentage = new CurrentPercentageEntity();
-            percentage.setHour(currentHour);
+            percentage.setHour(hour);
             percentage.setCommunityDepleted(communityDepleted);
             percentage.setGridPortion(gridPortion);
 

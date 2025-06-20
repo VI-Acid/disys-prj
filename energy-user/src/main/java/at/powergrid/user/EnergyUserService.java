@@ -5,6 +5,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.Random;
 
 @Service
@@ -23,10 +24,10 @@ public class EnergyUserService {
         double baseUsage = 0.001 + (0.005 * random.nextDouble());
         double adjustedUsage = Math.round((baseUsage * usageFactor) * 10000.0) / 10000.0;
 
-        String message = String.format(
+        String message = String.format(Locale.US,
                 "{\"type\":\"USER\",\"association\":\"COMMUNITY\",\"kwh\":\"%.4f\",\"datetime\":\"%s\"}",
                 adjustedUsage,
-                LocalDateTime.now()
+                LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS)
         );
         rabbitTemplate.convertAndSend("energyQueue", message);
         System.out.println("Sent user message: " + message);

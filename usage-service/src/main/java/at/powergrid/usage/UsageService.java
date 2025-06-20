@@ -24,9 +24,11 @@ public class UsageService {
     @RabbitListener(queues = "energyQueue")
     public void handleMessage(String message) {
         try {
+
             JsonNode json = objectMapper.readTree(message);
             String type = json.get("type").asText();
-            double kWh = json.get("kwh").asDouble();
+            String kWhString = json.get("kwh").asText().replace(",", ".");
+            double kWh = Double.parseDouble(kWhString);
             LocalDateTime datetime = LocalDateTime.parse(json.get("datetime").asText());
             LocalDateTime hour = datetime.truncatedTo(ChronoUnit.HOURS);
 
@@ -36,6 +38,13 @@ public class UsageService {
 
             if ("PRODUCER".equalsIgnoreCase(type)) {
                 usage.setCommunityProduced(usage.getCommunityProduced() + kWh);
+                // Überschussbedarf aus dem Grid ergänzen
+                double rest = usage.getCommunityUsed() - usage.getCommunityProduced();
+                if (rest > 0) {
+                    usage.setGridUsed(rest);  // optional: + ggf. vorhandener Wert
+                } else {
+                    usage.setGridUsed(0.0); // keine Grid-Nutzung nötig
+                }
             } else if ("USER".equalsIgnoreCase(type)) {
                 usage.setCommunityUsed(usage.getCommunityUsed() + kWh);
                 // Falls community pool nicht reicht → grid used erhöhen
@@ -44,6 +53,13 @@ public class UsageService {
                     usage.setGridUsed(diff);
                 }
             }
+
+            System.out.printf(
+                    "→ Nach Update: communityProduced=%.4f, communityUsed=%.4f, gridUsed=%.4f%n",
+                    usage.getCommunityProduced(),
+                    usage.getCommunityUsed(),
+                    usage.getGridUsed()
+            );
 
             usageRepository.save(usage);
             System.out.println("UsageService verarbeitet: " + message);

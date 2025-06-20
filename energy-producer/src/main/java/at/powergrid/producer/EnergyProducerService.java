@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.Locale;
 import java.util.Random;
 
 @Service
@@ -26,10 +27,10 @@ public class EnergyProducerService {
         double baseProduction = 0.002 + (0.008 * random.nextDouble());
         double adjustedProduction = Math.round((baseProduction * weatherFactor) * 10000.0) / 10000.0;
 
-        String message = String.format(
+        String message = String.format(Locale.US,
                 "{\"type\":\"PRODUCER\",\"association\":\"COMMUNITY\",\"kwh\":\"%.4f\",\"datetime\":\"%s\"}",
                 adjustedProduction,
-                LocalDateTime.now().toString()
+                LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString()
         );
 
         rabbitTemplate.convertAndSend("energyQueue", message);
