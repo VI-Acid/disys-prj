@@ -5,6 +5,10 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.ComboBox?>
 <VBox xmlns="http://javafx.com/javafx/8"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="at.powergrid.HelloController"
@@ -14,14 +18,24 @@
         <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
     </padding>
 
-    <Button text="Lade aktuelle Daten"
-            onAction="#onLoadCurrentDataClick"/>
+    <Button text="refresh" onAction="#onLoadCurrentDataClick"/>
 
-    <Button text="Lade History" onAction="#onLoadHistoryClick"/>
+    <HBox spacing="10">
+        <Label text="Start:"/>
+        <DatePicker fx:id="startDate"/>
+        <ComboBox fx:id="startHour" prefWidth="80"/>
+    </HBox>
 
+    <HBox spacing="10">
+        <Label text="End:"/>
+        <DatePicker fx:id="endDate"/>
+        <ComboBox fx:id="endHour" prefWidth="80"/>
+    </HBox>
+
+    <Button text="show data" onAction="#onLoadHistoryClick"/>
 
     <TextArea fx:id="textAreaOutput"
-              prefHeight="200"
+              prefHeight="250"
               wrapText="true"
               promptText="Antwort der REST-API erscheint hier..." />
 </VBox>

@@ -1,6 +1,10 @@
-package at.powergrid;
+package at.powergrid.dto;
+
+import java.util.List;
+
 
 public class HistoricalResponse {
+
     private double communityProduced;
     private double communityUsed;
     private double gridUsed;

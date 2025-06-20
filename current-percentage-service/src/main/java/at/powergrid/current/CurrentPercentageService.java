@@ -60,11 +60,17 @@ public class CurrentPercentageService {
         }
     }
 
-    public String getCurrentPercentageAsText() {
+
+    public int getCurrentPercentage() {
         LocalDateTime currentHour = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS);
-        Optional<CurrentPercentageEntity> current = percentageRepository.findById(currentHour);
-        return current
-                .map(p -> String.format("%.2f %% (Grid-Anteil)", p.getGridPortion()))
-                .orElse("Noch kein Prozentwert vorhanden.");
+        Optional<CurrentPercentageEntity> entityOpt = percentageRepository.findById(currentHour);
+
+        if (entityOpt.isPresent()) {
+            double gridPortion = entityOpt.get().getGridPortion();
+            return (int) Math.round(gridPortion);
+        }
+
+        return -1; // Wenn noch kein Wert vorhanden ist
     }
+
 }

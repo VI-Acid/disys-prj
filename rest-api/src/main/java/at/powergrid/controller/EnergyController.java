@@ -2,36 +2,60 @@ package at.powergrid.controller;
 
 import at.powergrid.dto.EnergyData;
 import at.powergrid.dto.HistoricalResponse;
-import at.powergrid.service.EnergyDataService;
+import at.powergrid.entity.CurrentPercentageEntity;
+import at.powergrid.entity.EnergyUsageEntity;
+import at.powergrid.repository.CurrentPercentageRepository;
+import at.powergrid.repository.EnergyUsageRepository;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
 @RequestMapping("/energy")
+@CrossOrigin(origins = "*")
 public class EnergyController {
 
-    private final EnergyDataService service;
+    private final EnergyUsageRepository usageRepository;
+    private final CurrentPercentageRepository percentageRepository;
 
-    public EnergyController(EnergyDataService service) {
-        this.service = service;
+    public EnergyController(EnergyUsageRepository usageRepository, CurrentPercentageRepository percentageRepository) {
+        this.usageRepository = usageRepository;
+        this.percentageRepository = percentageRepository;
     }
 
-    /** GET /energy/current → aktuellster Stunden-Prozentwert aus DB */
+    /** GET /energy/current → aktueller Prozentwert laut Tabelle */
     @GetMapping("/current")
     public EnergyData getCurrent() {
-        return service.getCurrentEnergyData();
+        LocalDateTime currentHour = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS);
+        CurrentPercentageEntity entity = percentageRepository.findById(currentHour).orElse(null);
+
+        if (entity == null) {
+            return new EnergyData(currentHour, 0, 0); // Fallback
+        }
+
+        return new EnergyData(currentHour, (int) entity.getCommunityDepleted(), entity.getGridPortion());
     }
 
-    /** GET /energy/historical?start=…&end=… */
+    /** GET /energy/historical?start=...&end=... → Aggregierte Summen aus energy_usage */
     @GetMapping("/historical")
-    public List<EnergyData> getHistoricalData(
+    public HistoricalResponse getHistoricalData(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
-    ) {
-        return EnergyDataService.getHistoricalEnergyData(start, end);
-    }
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
 
+        List<EnergyUsageEntity> entries = usageRepository.findByHourBetween(start, end);
+
+        double totalProduced = entries.stream().mapToDouble(EnergyUsageEntity::getCommunityProduced).sum();
+        double totalUsed     = entries.stream().mapToDouble(EnergyUsageEntity::getCommunityUsed).sum();
+        double totalGrid     = entries.stream().mapToDouble(EnergyUsageEntity::getGridUsed).sum();
+
+        HistoricalResponse response = new HistoricalResponse();
+        response.setCommunityProduced(totalProduced);
+        response.setCommunityUsed(totalUsed);
+        response.setGridUsed(totalGrid);
+
+        return response;
+    }
 }

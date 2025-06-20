@@ -1,19 +1,20 @@
-package at.powergrid;
+package at.powergrid.dto;
 
 import java.time.LocalDateTime;
 
 public class EnergyData {
-    private LocalDateTime hour;
+    private LocalDateTime timestamp;
     private double communityDepleted;
     private double gridPortion;
 
-    public LocalDateTime getHour() {
-        return hour;
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 
-    public void setHour(LocalDateTime hour) {
-        this.hour = hour;
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
+
 
     public double getCommunityDepleted() {
         return communityDepleted;

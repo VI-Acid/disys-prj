@@ -1,5 +1,7 @@
 package at.powergrid.dto;
 
+import java.time.LocalDateTime;
+
 public class EnergyData {
     private int hour;
     private double percentage;
@@ -7,7 +9,7 @@ public class EnergyData {
     private double used_kWh;
 
 
-    public EnergyData(int hour, double percentage) {
+    public EnergyData(LocalDateTime currentHour, int hour, double percentage) {
         this.hour = hour;
         this.percentage = percentage;
     }

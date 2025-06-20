@@ -1,23 +1,50 @@
 package at.powergrid;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import at.powergrid.dto.EnergyData;
+import at.powergrid.dto.HistoricalResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class HelloController {
 
     @FXML
     public TextArea textAreaOutput;
 
+    @FXML
+    public DatePicker startDate;
+
+    @FXML
+    public DatePicker endDate;
+
+    @FXML
+    public ComboBox<String> startHour;
+
+    @FXML
+    public ComboBox<String> endHour;
+
     private final HttpClient client = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+    @FXML
+    public void initialize() {
+        for (int i = 0; i < 24; i++) {
+            String hourStr = String.format("%02d:00", i);
+            startHour.getItems().add(hourStr);
+            endHour.getItems().add(hourStr);
+        }
+        startHour.getSelectionModel().select(0);
+        endHour.getSelectionModel().select(0);
+    }
 
     @FXML
     public void onLoadCurrentDataClick(ActionEvent event) {
@@ -31,8 +58,8 @@ public class HelloController {
             EnergyData data = mapper.readValue(response.body(), EnergyData.class);
 
             String formatted = String.format(
-                    "Aktuelle Stunde: %s\nCommunity-Depletion: %.2f %%\nGrid-Portion: %.2f %%",
-                    data.getHour(), data.getCommunityDepleted(), data.getGridPortion()
+                    "Aktuelle Stunde: %s\nCommunity Pool: %.2f %% verbraucht\nGrid Portion: %.2f %%",
+                    data.getTimestamp(), data.getCommunityDepleted(), data.getGridPortion()
             );
 
             textAreaOutput.setText(formatted);
@@ -44,9 +71,9 @@ public class HelloController {
     @FXML
     public void onLoadHistoryClick(ActionEvent event) {
         try {
-            // Beispiel-Zeitraum (kannst du ggf. über ein Eingabefeld steuerbar machen)
-            String start = "2025-06-01T00:00:00";
-            String end = "2025-06-16T23:59:59";
+            // Datum und Uhrzeit kombinieren
+            String start = formatDateTime(startDate, startHour);
+            String end = formatDateTime(endDate, endHour);
 
             String url = String.format("http://localhost:8080/energy/historical?start=%s&end=%s", start, end);
 
@@ -56,21 +83,27 @@ public class HelloController {
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            List<EnergyData> history = mapper.readValue(response.body(), new TypeReference<>() {});
+            HistoricalResponse data = mapper.readValue(response.body(), HistoricalResponse.class);
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("Historische Daten:\n\n");
-            for (EnergyData d : history) {
-                sb.append(String.format(
-                        "Stunde: %s | Community: %.2f %% | Grid: %.2f %%\n",
-                        d.getHour(), d.getCommunityDepleted(), d.getGridPortion()
-                ));
-            }
+            String output = String.format(
+                    "Community produced: %.3f kWh\nCommunity used: %.3f kWh\nGrid used: %.3f kWh",
+                    data.getCommunityProduced(), data.getCommunityUsed(), data.getGridUsed()
+            );
 
-            textAreaOutput.setText(sb.toString());
+            textAreaOutput.setText(output);
 
         } catch (Exception e) {
             textAreaOutput.setText("Fehler beim Laden: " + e.getMessage());
         }
     }
+
+    private String formatDateTime(DatePicker datePicker, ComboBox<String> hourBox) {
+        if (datePicker.getValue() == null || hourBox.getValue() == null) {
+            throw new IllegalArgumentException("Bitte Datum und Uhrzeit auswählen.");
+        }
+        LocalDateTime dateTime = datePicker.getValue()
+                .atTime(Integer.parseInt(hourBox.getValue().substring(0, 2)), 0);
+        return dateTime.format(formatter);
+    }
+
 }
