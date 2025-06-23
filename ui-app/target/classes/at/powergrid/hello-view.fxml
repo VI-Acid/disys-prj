@@ -2,23 +2,43 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.ComboBox?>
-<VBox xmlns="http://javafx.com/javafx/8"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="at.powergrid.HelloController"
-      spacing="10">
+<VBox alignment="TOP_LEFT" spacing="15" xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.powergrid.HelloController">
 
     <padding>
-        <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+        <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
+    <!-- Section: Current Percentage Data -->
+    <Label text="Energy Data Board" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <Label text="Current Percentage Data" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+    <HBox spacing="20">
+        <VBox spacing="5">
+            <Label text="Community Pool:"/>
+            <Label fx:id="labelCommunityPool" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+        </VBox>
+        <VBox spacing="5">
+            <Label text="Grid Portion:"/>
+            <Label fx:id="labelGridPortion" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+        </VBox>
+    </HBox>
+
     <Button text="refresh" onAction="#onLoadCurrentDataClick"/>
+
+    <Separator/>
+
+    <!-- Section: Historical Query -->
+    <Label text="Historical Data" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
 
     <HBox spacing="10">
         <Label text="Start:"/>
@@ -34,8 +54,6 @@
 
     <Button text="show data" onAction="#onLoadHistoryClick"/>
 
-    <TextArea fx:id="textAreaOutput"
-              prefHeight="250"
-              wrapText="true"
-              promptText="Antwort der REST-API erscheint hier..." />
+    <!-- Output -->
+    <TextArea fx:id="textAreaOutput" prefHeight="180" wrapText="true" editable="false"/>
 </VBox>

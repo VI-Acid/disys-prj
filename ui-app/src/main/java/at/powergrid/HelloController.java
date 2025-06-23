@@ -18,6 +18,12 @@ import java.time.format.DateTimeFormatter;
 public class HelloController {
 
     @FXML
+    public Label labelCommunityPool;
+
+    @FXML
+    public Label labelGridPortion;
+
+    @FXML
     public TextArea textAreaOutput;
 
     @FXML
@@ -64,27 +70,27 @@ public class HelloController {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                // parse JSON
+                EnergyData data = mapper.readValue(response.body(), EnergyData.class);
+
+                labelCommunityPool.setText(String.format("%.2f%%", data.getPercentage()));
+                labelGridPortion.setText(String.format("%.2f%%", 100.0 - data.getPercentage()));
             } else {
-                textAreaOutput.setText("Fehler vom Server: " + response.body());
+                labelCommunityPool.setText("Error");
+                labelGridPortion.setText("");
+                System.err.println("Server error: " + response.body());
             }
-
-            EnergyData data = mapper.readValue(response.body(), EnergyData.class);
-
-            String formatted = String.format(
-                    "Zeitpunkt: %s\nErzeugt: %.2f kWh\nVerbraucht: %.2f kWh\nVerbrauchsanteil: %.2f%%",
-                    data.getTimestamp(), data.getProduced_kWh(), data.getUsed_kWh(), data.getPercentage()
-            );
-
-            textAreaOutput.setText(formatted);
         } catch (Exception e) {
-            textAreaOutput.setText("Fehler beim Laden: " + e.getMessage());
+            labelCommunityPool.setText("Error");
+            labelGridPortion.setText("");
+            System.err.println("Exception: " + e.getMessage());
         }
     }
+
 
     @FXML
     public void onLoadHistoryClick(ActionEvent event) {
         try {
+
             String start = formatDateTime(startDate, startHour);
             String end = formatDateTime(endDate, endHour);
 
@@ -98,30 +104,31 @@ public class HelloController {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                // parse JSON
+                System.out.println("Request URL: " + url);
+
+                HistoricalResponse data = mapper.readValue(response.body(), HistoricalResponse.class);
+
+                String output = String.format(
+                        "Community produced: %.3f kWh\nCommunity used: %.3f kWh\nGrid used: %.3f kWh",
+                        data.getCommunityProduced(), data.getCommunityUsed(), data.getGridUsed()
+                );
+                textAreaOutput.setText(output);
             } else {
-                textAreaOutput.setText("Fehler vom Server: " + response.body());
+                textAreaOutput.setText("Error from server: " + response.body());
             }
-            HistoricalResponse data = mapper.readValue(response.body(), HistoricalResponse.class);
-
-            String output = String.format(
-                    "Community erzeugt: %.3f kWh\nCommunity verbraucht: %.3f kWh\nGrid genutzt: %.3f kWh",
-                    data.getCommunityProduced(), data.getCommunityUsed(), data.getGridUsed()
-            );
-
-            textAreaOutput.setText(output);
 
         } catch (Exception e) {
-            textAreaOutput.setText("Fehler beim Laden: " + e.getMessage());
+            textAreaOutput.setText("Error during loading: " + e.getMessage());
         }
     }
 
+
     private String formatDateTime(DatePicker datePicker, ComboBox<String> hourBox) {
         if (datePicker.getValue() == null || hourBox.getValue() == null) {
-            throw new IllegalArgumentException("Bitte Datum und Uhrzeit auswählen.");
+            throw new IllegalArgumentException("Please select both date and hour.");
         }
         LocalDateTime dateTime = datePicker.getValue()
                 .atTime(Integer.parseInt(hourBox.getValue().substring(0, 2)), 0);
-        return dateTime.format(formatter);
+        return dateTime.atOffset(java.time.ZoneOffset.UTC).toString();
     }
 }
