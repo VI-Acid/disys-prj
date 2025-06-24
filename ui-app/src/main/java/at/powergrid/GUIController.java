@@ -57,6 +57,7 @@ public class GUIController {
         }
         startHour.getSelectionModel().select(0);
         endHour.getSelectionModel().select(0);
+        onLoadCurrentDataClick(null);
     }
 
     @FXML
