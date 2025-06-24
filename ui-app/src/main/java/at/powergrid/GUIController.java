@@ -15,7 +15,7 @@ import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class HelloController {
+public class GUIController {
 
     @FXML
     public Label labelCommunityPool;
@@ -43,7 +43,7 @@ public class HelloController {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-    public HelloController() {
+    public GUIController() {
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule()); // für OffsetDateTime
     }
