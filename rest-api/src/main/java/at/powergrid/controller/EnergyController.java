@@ -35,11 +35,18 @@ public class EnergyController {
         CurrentPercentageEntity entity = percentageRepository.findById(currentHour).orElse(null);
 
         if (entity == null) {
-            return new EnergyData(currentHour.atOffset(ZoneOffset.UTC), 0.0, 0.0, 0.0, entity.getCommunityDepleted(), entity.getGridPortion());
+            return new EnergyData(
+                    currentHour.atOffset(ZoneOffset.UTC),
+                    0.0,
+                    0.0
+                   );
             // Fallback
         }
 
-        return new EnergyData(currentHour.atOffset(ZoneOffset.UTC), 0, 0, 0, entity.getCommunityDepleted(), entity.getGridPortion());
+        return new EnergyData(
+                currentHour.atOffset(ZoneOffset.UTC),
+                entity.getCommunityDepleted(),
+                entity.getGridPortion());
     }
 
     /** GET /energy/historical?start=...&end=... → Aggregierte Summen aus energy_usage */
