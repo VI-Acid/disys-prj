@@ -32,7 +32,6 @@ public class EnergyData {
         this.timestamp = timestamp;
     }
 
-
     public double getProduced_kWh() {
         return produced_kWh;
     }

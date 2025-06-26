@@ -57,6 +57,7 @@ public class HelloController {
         }
         startHour.getSelectionModel().select(0);
         endHour.getSelectionModel().select(0);
+
     }
 
     @FXML
