@@ -1,10 +1,8 @@
 package at.powergrid.dto;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.util.List;
 
-
+// Respräsentiert die Antwort des REST-API Endpunkts für historische Daten
 public class HistoricalResponse {
 
     private double communityProduced;
@@ -12,6 +10,11 @@ public class HistoricalResponse {
     private double gridUsed;
     private OffsetDateTime timestamp;
 
+    public HistoricalResponse() {
+        // Standardkonstruktor für JSON-Deserialisierung
+    }
+
+    // Getter & Setter
     public OffsetDateTime getTimestamp() {
         return timestamp;
     }
@@ -20,8 +23,6 @@ public class HistoricalResponse {
         this.timestamp = timestamp;
     }
 
-
-    // Getter & Setter
     public double getCommunityProduced() {
         return communityProduced;
     }

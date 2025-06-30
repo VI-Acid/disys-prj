@@ -10,3 +10,10 @@ CREATE TABLE current_percentage (
                                     community_depleted DOUBLE PRECISION,
                                     grid_portion DOUBLE PRECISION
 );
+
+
+ALTER TABLE energy_usage
+    ALTER COLUMN hour TYPE timestamp(0) without time zone;
+
+ALTER TABLE current_percentage
+    ALTER COLUMN hour TYPE timestamp(0) without time zone;

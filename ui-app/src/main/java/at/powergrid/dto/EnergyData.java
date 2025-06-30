@@ -1,6 +1,5 @@
 package at.powergrid.dto;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 public class EnergyData {
@@ -13,49 +12,32 @@ public class EnergyData {
         // notwendig für Jackson
     }
 
-    public EnergyData(OffsetDateTime timestamp, int hour, double percentage) {
-        this.timestamp = timestamp;
-        this.percentage = percentage;
+    /**
+     * Timestamp: Stunde (UTC)
+     * percentage: hier verwenden wir communityDepleted in %
+     * produced_kWh: hier packen wir gridPortion in %
+     * used_kWh: unused für current, wird HISTORICAL gefüllt
+     */
+    public EnergyData(OffsetDateTime timestamp,
+                      double percentage,
+                      double produced_kWh,
+                      double used_kWh) {
+        this.timestamp     = timestamp;
+        this.percentage    = percentage;
+        this.produced_kWh  = produced_kWh;
+        this.used_kWh      = used_kWh;
     }
 
-    public EnergyData(OffsetDateTime timestamp, double percentage, double produced_kWh, double used_kWh) {
-        this.timestamp = timestamp;
-        this.percentage = percentage;
-        this.produced_kWh = produced_kWh;
-        this.used_kWh = used_kWh;
-    }
+    // --- Getter & Setter ---
+    public OffsetDateTime getTimestamp()      { return timestamp; }
+    public void setTimestamp(OffsetDateTime t){ this.timestamp = t; }
 
-    public OffsetDateTime getTimestamp() {
-        return timestamp;
-    }
+    public double getPercentage()             { return percentage; }
+    public void setPercentage(double p)       { this.percentage = p; }
 
-    public void setTimestamp(OffsetDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
+    public double getProduced_kWh()           { return produced_kWh; }
+    public void setProduced_kWh(double p)     { this.produced_kWh = p; }
 
-
-    public double getProduced_kWh() {
-        return produced_kWh;
-    }
-
-    public void setProduced_kWh(double produced_kWh) {
-        this.produced_kWh = produced_kWh;
-    }
-
-    public double getUsed_kWh() {
-        return used_kWh;
-    }
-
-    public void setUsed_kWh(double used_kWh) {
-        this.used_kWh = used_kWh;
-    }
-
-    public double getPercentage() {
-        return percentage;
-    }
-
-    public void setPercentage(double percentage) {
-        this.percentage = percentage;
-    }
-
+    public double getUsed_kWh()               { return used_kWh; }
+    public void setUsed_kWh(double u)         { this.used_kWh = u; }
 }

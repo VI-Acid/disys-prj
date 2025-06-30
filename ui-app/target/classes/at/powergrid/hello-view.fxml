@@ -23,14 +23,12 @@
     <Label text="Current Percentage Data" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
 
     <HBox spacing="20">
-        <VBox spacing="5">
-            <Label text="Community Pool:"/>
-            <Label fx:id="labelCommunityPool" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
-        </VBox>
-        <VBox spacing="5">
-            <Label text="Grid Portion:"/>
-            <Label fx:id="labelGridPortion" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
-        </VBox>
+        <Label text="Community Pool:"/>
+        <Label fx:id="labelCommunityPool" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+    </HBox>
+    <HBox spacing="20">
+        <Label text="Grid Portion:"/>
+        <Label fx:id="labelGridPortion" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
     </HBox>
 
     <Button text="refresh" onAction="#onLoadCurrentDataClick"/>

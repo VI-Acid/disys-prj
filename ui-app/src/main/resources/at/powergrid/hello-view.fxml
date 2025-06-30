@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="TOP_LEFT" spacing="15" xmlns="http://javafx.com/javafx/23.0.1"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.powergrid.GUIController">
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.powergrid.HelloController">
 
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
@@ -23,14 +23,12 @@
     <Label text="Current Percentage Data" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
 
     <HBox spacing="20">
-        <VBox spacing="5">
-            <Label text="Community Pool:"/>
-            <Label fx:id="labelCommunityPool" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
-        </VBox>
-        <VBox spacing="5">
-            <Label text="Grid Portion:"/>
-            <Label fx:id="labelGridPortion" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
-        </VBox>
+        <Label text="Community Pool:"/>
+        <Label fx:id="labelCommunityPool" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+    </HBox>
+    <HBox spacing="20">
+        <Label text="Grid Portion:"/>
+        <Label fx:id="labelGridPortion" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
     </HBox>
 
     <Button text="refresh" onAction="#onLoadCurrentDataClick"/>
