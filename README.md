@@ -12,7 +12,7 @@ Das Diagramm zeigt drei Tabellen:
 
 ## Component Diagramm - PowerGrid
 
-![ER-Diagramm PowerGrid](Powergrid_Component.png)
+![Component Diagram PowerGrid](Powergrid_Component.png)
 
 ## Technologien
 - Java 21 (Zulu FX)
